@@ -40,7 +40,7 @@ State management is handled natively via the React Context API (`FinanceContext.
 ### 📊 3. Responsive Financial Intelligence
 
 <!-- REPLACE THIS LINK WITH A SCREENSHOT OF YOUR CHARTS -->
-![Analytics Insight Charting](./dashboard.gif)
+![Analytics Insight Charting](./dashboard.png)
 
 * **Responsive Charting**: Beautifully customized analytical interfaces tracking daily expense gaps via responsive line-grids, and interactive doughnut architectures for deep category insight.
 * **Contextual Insights Engine**: Seamlessly algorithms processing live data to deliver on-screen Cash Flow health markers and precise maximum-expense alerts natively connected to backend adjustments.
