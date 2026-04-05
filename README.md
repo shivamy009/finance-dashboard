@@ -21,8 +21,8 @@ State management is handled natively via the React Context API (`FinanceContext.
 
 ### 🔐 1. Role-Based Dashboard Authorization (Admin vs Viewer)
 
-<!-- REPLACE THIS LINK WITH YOUR ADMIN PANEL SCREENSHOT -->
-![Admin Controls View](./view.gif)
+![User View](./usr.png)
+![Admin View](./admin.png)
 
 * **Dynamic Permissions System**: A persistent, mock-authenticated state layout that shifts UI interfaces based on contextual roles.
 * **Admin Privileges**: Unlocks total CRUD (Create, Read, Update, Delete) capability on the global transaction ledger. Fully manages localized datastore logic and grants access to export the live table straight into cleanly formatted `.json` files for external system handoffs.
@@ -31,7 +31,7 @@ State management is handled natively via the React Context API (`FinanceContext.
 ### 💎 2. Premium Bento Grid UI Architecture
 
 <!-- REPLACE THIS LINK WITH A CLOSE-UP OF YOUR CARDS/ANIMATIONS -->
-![UI Component Close-up](./dashboard.gif)
+![Premium Bento Grid UI](./premium.png)
 
 * **Physical Graphics**: Completely custom Tailwind configurations yielding deep ambient inner glows, frosted backdrop blurring, responsive hover escalation vectors (`hover:-translate-y-1`), and complex layered radial micro-dot textures.
 * **Cinematic Entrance Effects**: Heavily integrated `framer-motion` timelines to orchestrate a hyper-smooth cascade-blur sequential animation every time elements scroll into the viewport.
