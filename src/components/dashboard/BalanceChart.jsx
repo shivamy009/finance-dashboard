@@ -7,6 +7,11 @@ import { format, parseISO } from 'date-fns';
 export const BalanceChart = () => {
   const { transactions, theme } = useFinance();
 
+  const formatCurrency = (value) => {
+    const numericValue = Number(value) || 0;
+    return `$${numericValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  };
+
   const data = useMemo(() => {
     // Group transactions by date
     const grouped = transactions.reduce((acc, t) => {
@@ -50,7 +55,7 @@ export const BalanceChart = () => {
               fontSize={12} 
               tickLine={false} 
               axisLine={false} 
-              tickFormatter={(value) => `$${value}`}
+              tickFormatter={formatCurrency}
             />
             <Tooltip 
               contentStyle={{ 
@@ -60,6 +65,7 @@ export const BalanceChart = () => {
                 color: theme === 'dark' ? '#ffffff' : '#111827'
               }}
               itemStyle={{ color: theme === 'dark' ? '#ffffff' : '#111827' }}
+              formatter={(value) => formatCurrency(value)}
             />
             <Line 
               type="monotone" 
