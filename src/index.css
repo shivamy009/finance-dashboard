@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Sora", ui-sans-serif, system-ui, sans-serif;
+}
+
+@variant dark (&:is(.dark *));
+
+@layer base {
+  body {
+    @apply font-sans bg-gray-50 text-gray-900 dark:bg-neutral-950 dark:text-white antialiased transition-colors duration-300;
+  }
+}
