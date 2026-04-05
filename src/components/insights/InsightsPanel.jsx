@@ -15,7 +15,7 @@ export const InsightsPanel = () => {
         list.push({
           id: 1,
           icon: TrendingUp,
-          title: 'Positive Cash Flow',
+          title: 'Cash Flow Is Positive',
           desc: `You've earned $${(totalIncome - totalExpenses).toLocaleString()} more than you spent.`,
           color: 'text-green-600 dark:text-green-400'
         });
@@ -23,7 +23,7 @@ export const InsightsPanel = () => {
         list.push({
           id: 1,
           icon: AlertCircle,
-          title: 'Negative Cash Flow',
+          title: 'Cash Flow Needs Attention',
           desc: `Your expenses exceeded your income by $${(totalExpenses - totalIncome).toLocaleString()}.`,
           color: 'text-red-500 dark:text-red-400'
         });
@@ -43,7 +43,7 @@ export const InsightsPanel = () => {
       list.push({
         id: 2,
         icon: TrendingDown,
-        title: 'Top Expense Category',
+        title: 'Highest Spend Category',
         desc: `You spent the most on ${highestCat} ($${grouped[highestCat].toLocaleString()}).`,
         color: 'text-orange-500 dark:text-orange-400'
       });
@@ -56,7 +56,7 @@ export const InsightsPanel = () => {
         list.push({
           id: 3,
           icon: Lightbulb,
-          title: 'Largest Transaction',
+          title: 'Largest Single Movement',
           desc: `A ${largest.type} of $${largest.amount.toLocaleString()} for ${largest.category}.`,
           color: 'text-blue-500 dark:text-blue-400'
         });
@@ -70,7 +70,7 @@ export const InsightsPanel = () => {
     <Card className="p-6">
       <div className="flex items-center gap-2 mb-6">
         <Lightbulb className="w-5 h-5 text-yellow-500 dark:text-yellow-400" />
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Key Insights</h3>
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Smart Insights</h3>
       </div>
       
       {insights.length === 0 ? (
@@ -80,7 +80,7 @@ export const InsightsPanel = () => {
           {insights.map((insight) => {
             const Icon = insight.icon;
             return (
-               <div key={insight.id} className="flex gap-4 p-4 rounded-xl bg-gray-50/50 border border-gray-100 dark:bg-neutral-950/50 dark:border-neutral-800/80 items-start transition-colors">
+               <div key={insight.id} className="flex items-start gap-4 rounded-xl border border-slate-100 bg-slate-50/60 p-4 transition-colors dark:border-slate-800/80 dark:bg-slate-950/45">
                   <div className={`mt-0.5 ${insight.color}`}>
                     <Icon className="w-5 h-5" />
                   </div>

@@ -3,7 +3,7 @@ import { Card } from '../ui/Card';
 import { useFinance } from '../../context/FinanceContext';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
-const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#06b6d4'];
+const COLORS = ['#0ea5e9', '#14b8a6', '#f59e0b', '#22c55e', '#ef4444', '#f97316', '#06b6d4'];
 
 export const CategoryChart = () => {
   const { transactions, theme } = useFinance();
@@ -24,8 +24,8 @@ export const CategoryChart = () => {
   if (data.length === 0) return null;
 
   return (
-    <Card className="p-6 h-[350px] flex flex-col">
-      <h3 className="text-sm font-medium text-gray-500 dark:text-neutral-400 mb-4">Spending by Category</h3>
+    <Card className="p-6 h-87.5 flex flex-col">
+      <h3 className="mb-4 text-sm font-medium text-slate-500 dark:text-slate-400">Category Spend Mix</h3>
       <div className="flex-1 w-full relative">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

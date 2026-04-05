@@ -16,47 +16,48 @@ export const Navbar = () => {
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
 
   return (
-    <div className="sticky top-4 z-50 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <nav className="border border-gray-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/70 backdrop-blur-xl rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/40 transition-colors duration-300">
-        <div className="flex items-center justify-between h-16 px-4 md:px-6">
+    <div className="sticky top-4 z-50 mx-auto mb-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav className="rounded-3xl border border-slate-200/80 bg-white/75 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-colors duration-300 dark:border-slate-800/80 dark:bg-slate-900/70 dark:shadow-[0_14px_34px_rgba(2,6,23,0.55)]">
+        <div className="flex h-16 items-center justify-between px-4 md:px-6">
           
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gray-100 dark:bg-black rounded-full border border-gray-200 dark:border-neutral-800 transition-colors">
-              <Wallet className="w-5 h-5 text-gray-800 dark:text-white" />
+            <div className="rounded-2xl border border-slate-200 bg-slate-100 p-2.5 transition-colors dark:border-slate-800 dark:bg-slate-950">
+              <Wallet className="h-5 w-5 text-slate-800 dark:text-slate-100" />
             </div>
-            <span className="font-semibold text-gray-900 dark:text-white text-lg tracking-tight hidden sm:block">Finance</span>
+            <div className="hidden sm:block">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">Control Center</p>
+              <span className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Finance Dashboard</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-3 md:gap-5">
-            {/* Glowy Button */}
             <button 
               onClick={scrollToTransactions}
-              className="hidden sm:inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-gray-900 text-white dark:bg-white dark:text-black text-sm font-bold shadow-[0_0_15px_rgba(0,0,0,0.15)] dark:shadow-[0_0_15px_rgba(255,255,255,0.4)] hover:shadow-[0_0_20px_rgba(0,0,0,0.2)] dark:hover:shadow-[0_0_25px_rgba(255,255,255,0.7)] hover:-translate-y-0.5 transition-all duration-300"
+              className="hidden sm:inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(15,23,42,0.25)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-700 dark:bg-sky-400 dark:text-slate-900 dark:shadow-[0_10px_24px_rgba(14,165,233,0.35)] dark:hover:bg-sky-300"
             >
-              Recent Transactions
+              Jump To Ledger
             </button>
             
-            {/* Theme Toggle */}
             <button 
               onClick={toggleTheme}
-              className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-neutral-800 rounded-full transition-colors"
+              className="rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
               title="Toggle Theme"
             >
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
             
-            <div className="flex items-center bg-gray-100 dark:bg-black/50 rounded-full p-1 border border-gray-200 dark:border-neutral-800 transition-colors">
+            <div className="flex items-center rounded-2xl border border-slate-200 bg-slate-100 p-1 dark:border-slate-800 dark:bg-slate-950/60">
               <button
-                className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${role === 'VIEWER' ? 'bg-white text-gray-900 shadow-sm dark:bg-neutral-800 dark:text-white' : 'text-gray-500 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-white'}`}
+                className={`rounded-xl px-3 py-1.5 text-sm font-medium transition-colors ${role === 'VIEWER' ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'}`}
                 onClick={() => setRole('VIEWER')}
               >
                 Viewer
               </button>
               <button
-                className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors flex items-center gap-1.5 ${role === 'ADMIN' ? 'bg-white text-gray-900 shadow-sm dark:bg-neutral-800 dark:text-white' : 'text-gray-500 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-white'}`}
+                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors ${role === 'ADMIN' ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'}`}
                 onClick={() => setRole('ADMIN')}
               >
-                <ShieldAlert className="w-3.5 h-3.5" /> <span className="hidden md:inline">Admin</span>
+                <ShieldAlert className="h-3.5 w-3.5" /> <span className="hidden md:inline">Admin</span>
               </button>
             </div>
           </div>

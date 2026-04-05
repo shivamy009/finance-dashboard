@@ -5,24 +5,21 @@ export const Card = ({ className, children, ...props }) => {
   return (
     <div
       className={cn(
-        "group relative rounded-xl transition-all duration-500 will-change-transform z-10",
-        "border border-gray-100/80 dark:border-white/10 bg-white dark:bg-black/80 backdrop-blur-sm",
-        "hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgba(255,255,255,0.03)]",
-        "hover:-translate-y-1",
+        "group relative z-10 overflow-hidden rounded-2xl border border-slate-200/70 bg-white/85 backdrop-blur-sm transition-all duration-500 will-change-transform dark:border-slate-800/70 dark:bg-slate-900/85",
+        "shadow-[0_12px_30px_rgba(15,23,42,0.05)] dark:shadow-[0_14px_34px_rgba(2,6,23,0.35)]",
+        "hover:-translate-y-0.5 hover:shadow-[0_14px_38px_rgba(15,23,42,0.09)] dark:hover:shadow-[0_18px_40px_rgba(2,6,23,0.55)]",
         className
       )}
       {...props}
     >
-      {/* Background Graphic Effects Container (Isolated layout) */}
-      <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none -z-10">
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-2xl">
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-sky-400/60 to-transparent opacity-40" />
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.02)_1px,transparent_1px)] dark:bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:4px_4px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(14,165,233,0.14),transparent_45%),radial-gradient(circle_at_85%_100%,rgba(20,184,166,0.12),transparent_40%)] dark:bg-[radial-gradient(circle_at_20%_15%,rgba(14,165,233,0.18),transparent_45%),radial-gradient(circle_at_85%_100%,rgba(20,184,166,0.16),transparent_40%)]" />
         </div>
-        <div className="absolute inset-0 p-px bg-gradient-to-br from-transparent via-gray-100/70 to-transparent dark:via-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="absolute bottom-0 w-full h-[30%] bg-gradient-to-t from-gray-50/50 to-transparent dark:from-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_40%,rgba(255,255,255,0.45)_50%,transparent_60%,transparent_100%)] opacity-0 transition-opacity duration-700 group-hover:opacity-100 dark:bg-[linear-gradient(120deg,transparent_0%,transparent_40%,rgba(255,255,255,0.12)_50%,transparent_60%,transparent_100%)]" />
       </div>
 
-      {/* Children flow transparently */}
       {children}
     </div>
   );

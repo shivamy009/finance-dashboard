@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Card } from '../ui/Card';
+import React, { useEffect, useRef, useState } from 'react';
 import { TransactionFilters } from './TransactionFilters';
 import { useFinance } from '../../context/FinanceContext';
 import { format, parseISO } from 'date-fns';
@@ -7,9 +6,13 @@ import { Plus, Trash2, Edit2, Download, ChevronDown } from 'lucide-react';
 import { Modal } from '../ui/Modal';
 
 export const TransactionTable = () => {
-  const { filteredTransactions, role, addTransaction, deleteTransaction, updateTransaction, exportData } = useFinance();
+  const ITEMS_PER_PAGE = 10;
+  const { filteredTransactions, role, addTransaction, deleteTransaction, updateTransaction, exportDataAsJson, exportDataAsCsv } = useFinance();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const exportMenuRef = useRef(null);
   
   const [formData, setFormData] = useState({
     amount: '',
@@ -56,22 +59,73 @@ export const TransactionTable = () => {
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(event.target)) {
+        setIsExportMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredTransactions]);
+
+  const handleExportJson = () => {
+    exportDataAsJson();
+    setIsExportMenuOpen(false);
+  };
+
+  const handleExportCsv = () => {
+    exportDataAsCsv();
+    setIsExportMenuOpen(false);
+  };
+
+  const totalPages = Math.max(1, Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedTransactions = filteredTransactions.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
   return (
-    <Card className="p-6">
+    <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-[0_12px_30px_rgba(15,23,42,0.05)] dark:border-slate-800/80 dark:bg-slate-950 dark:shadow-[0_14px_34px_rgba(2,6,23,0.35)]">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h3>
         <div className="flex items-center gap-3">
-          <button 
-            onClick={exportData}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:text-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 rounded-xl transition-colors"
-            title="Export Data"
-          >
-            <Download className="w-4 h-4" /> <span className="hidden sm:inline">Export</span>
-          </button>
+          <div className="relative" ref={exportMenuRef}>
+            <button
+              onClick={() => setIsExportMenuOpen((prev) => !prev)}
+              className="flex items-center gap-2 rounded-xl bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+              title="Export Data"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">Export</span>
+              <ChevronDown className={`h-4 w-4 transition-transform ${isExportMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isExportMenuOpen && (
+              <div className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+                <button
+                  onClick={handleExportJson}
+                  className="block w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800"
+                >
+                  Export as JSON
+                </button>
+                <button
+                  onClick={handleExportCsv}
+                  className="block w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800"
+                >
+                  Export as CSV
+                </button>
+              </div>
+            )}
+          </div>
           {role === 'ADMIN' && (
             <button 
               onClick={() => handleOpenModal()}
-              className="flex items-center gap-2 bg-gray-900 text-white dark:bg-white dark:text-black px-4 py-1.5 rounded-xl text-sm font-medium shadow-md hover:bg-gray-800 dark:hover:bg-neutral-200 transition-colors"
+              className="flex items-center gap-2 bg-gray-900 text-white dark:bg-sky-300 dark:text-slate-950 px-4 py-1.5 rounded-xl text-sm font-medium shadow-md hover:bg-gray-800 dark:hover:bg-sky-200 transition-colors"
             >
               <Plus className="w-4 h-4" /> Add New
             </button>
@@ -100,7 +154,7 @@ export const TransactionTable = () => {
                 </td>
               </tr>
             ) : (
-              filteredTransactions.map((t) => (
+              paginatedTransactions.map((t) => (
                 <tr key={t.id} className="border-b border-gray-100 dark:border-neutral-800/50 hover:bg-gray-50 dark:hover:bg-neutral-800/20 transition-colors">
                   <td className="py-4 px-4 whitespace-nowrap text-gray-600 dark:text-neutral-300">
                     {format(parseISO(t.date), 'MMM dd, yyyy')}
@@ -143,6 +197,49 @@ export const TransactionTable = () => {
         </table>
       </div>
 
+      {filteredTransactions.length > 0 && (
+        <div className="mt-4 flex flex-col gap-3 border-t border-gray-100 pt-4 text-sm dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-gray-500 dark:text-neutral-400">
+            Showing {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredTransactions.length)} of {filteredTransactions.length}
+          </p>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={safeCurrentPage === 1}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+            >
+              Prev
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                type="button"
+                onClick={() => setCurrentPage(page)}
+                className={`rounded-lg px-3 py-1.5 transition-colors ${
+                  safeCurrentPage === page
+                    ? 'bg-gray-900 text-white dark:bg-sky-300 dark:text-slate-950'
+                    : 'border border-gray-200 text-gray-700 hover:bg-gray-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={safeCurrentPage === totalPages}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
@@ -153,7 +250,7 @@ export const TransactionTable = () => {
             <label className="block text-sm font-medium text-gray-700 dark:text-neutral-400 mb-1">Type</label>
             <div className="relative">
               <select 
-                className="appearance-none [color-scheme:light] dark:[color-scheme:dark] w-full bg-white border border-gray-300 dark:bg-neutral-950 dark:border-neutral-800 rounded-xl pl-3 pr-10 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-neutral-700 cursor-pointer"
+                className="appearance-none scheme-light dark:scheme-dark w-full bg-white border border-gray-300 dark:bg-neutral-950 dark:border-neutral-800 rounded-xl pl-3 pr-10 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-neutral-700 cursor-pointer"
                 value={formData.type}
                 onChange={e => setFormData({ ...formData, type: e.target.value })}
               >
@@ -192,7 +289,7 @@ export const TransactionTable = () => {
             <input 
               required
               type="date" 
-              className="w-full [color-scheme:light] dark:[color-scheme:dark] bg-white border border-gray-300 dark:bg-neutral-950 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-neutral-700 cursor-pointer"
+              className="w-full scheme-light dark:scheme-dark bg-white border border-gray-300 dark:bg-neutral-950 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-neutral-700 cursor-pointer"
               value={formData.date}
               onChange={e => setFormData({ ...formData, date: e.target.value })}
             />
@@ -207,13 +304,13 @@ export const TransactionTable = () => {
             </button>
             <button 
               type="submit"
-              className="px-4 py-2 bg-gray-900 text-white dark:bg-white dark:text-black rounded-xl text-sm font-medium shadow hover:bg-gray-800 dark:hover:bg-neutral-200 transition-colors"
+              className="px-4 py-2 bg-gray-900 text-white dark:bg-sky-300 dark:text-slate-950 rounded-xl text-sm font-medium shadow hover:bg-gray-800 dark:hover:bg-sky-200 transition-colors"
             >
               {editingItem ? 'Save Changes' : 'Create Transaction'}
             </button>
           </div>
         </form>
       </Modal>
-    </Card>
+    </section>
   );
 };

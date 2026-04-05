@@ -8,6 +8,7 @@ import { TransactionTable } from './components/transactions/TransactionTable';
 import { InsightsPanel } from './components/insights/InsightsPanel';
 import { Loader } from './components/ui/Loader';
 import { motion } from 'framer-motion';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
 function DashboardContent() {
   const { isLoading } = useFinance();
@@ -16,62 +17,53 @@ function DashboardContent() {
     return <Loader />;
   }
 
-  const blurIn = {
-    hidden: { opacity: 0, y: 30, filter: "blur(12px)" },
-    visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: "easeOut" } }
+  const revealUp = {
+    hidden: { opacity: 0, y: 22, scale: 0.985 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] },
+    },
   };
 
   return (
-    <div>
-      {/* Top Summary Section */}
+    <div className="space-y-6">
       <motion.section 
         initial="hidden" 
         whileInView="visible" 
-        viewport={{ once: false, amount: 0.1 }}
-        variants={blurIn}
+        viewport={{ once: true, amount: 0.15 }}
+        variants={revealUp}
       >
         <SummaryCards />
       </motion.section>
 
-      {/* Balance Chart Section - Full Width */}
       <motion.section 
         initial="hidden" 
         whileInView="visible" 
-        viewport={{ once: false, amount: 0.1 }}
-        variants={blurIn} 
-        className="mt-6"
+        viewport={{ once: true, amount: 0.15 }}
+        variants={revealUp}
       >
         <BalanceChart />
       </motion.section>
 
-      {/* Category & Insights Section - 2 Columns */}
       <motion.section 
         initial="hidden" 
         whileInView="visible" 
-        viewport={{ once: false, amount: 0.1 }}
-        variants={blurIn} 
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6"
+        viewport={{ once: true, amount: 0.15 }}
+        variants={revealUp}
+        className="grid grid-cols-1 gap-6 xl:grid-cols-[1.05fr_0.95fr]"
       >
         <CategoryChart />
         <InsightsPanel />
       </motion.section>
 
-      {/* Transactions Table Section */}
-      <motion.section 
-        initial="hidden" 
-        whileInView="visible" 
-        viewport={{ once: false, amount: 0.1 }}
-        variants={blurIn} 
-        id="transactions-section" 
-        className="mt-6"
-      >
+      <section id="transactions-section">
         <TransactionTable />
-      </motion.section>
+      </section>
     </div>
   );
 }
-
-import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
 function App() {
   return (

@@ -111,17 +111,49 @@ export const FinanceProvider = ({ children }) => {
     });
   };
 
-  const exportData = () => {
-    const jsonString = JSON.stringify(transactions, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
+  const downloadFile = (content, type, filename) => {
+    const blob = new Blob([content], { type });
     const href = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = href;
-    link.download = 'finance_transactions_export.json';
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(href);
   };
+
+  const exportDataAsJson = () => {
+    const jsonString = JSON.stringify(transactions, null, 2);
+    downloadFile(jsonString, 'application/json', 'finance_transactions_export.json');
+  };
+
+  const escapeCsvValue = (value) => {
+    const str = String(value ?? '');
+    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+  };
+
+  const exportDataAsCsv = () => {
+    const headers = ['id', 'date', 'category', 'type', 'amount'];
+    const rows = transactions.map((t) => {
+      return [
+        t.id,
+        t.date,
+        t.category,
+        t.type,
+        Number(t.amount).toFixed(2)
+      ].map(escapeCsvValue).join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    downloadFile(csvContent, 'text/csv;charset=utf-8;', 'finance_transactions_export.csv');
+  };
+
+  // Keep backward compatibility for any existing callers.
+  const exportData = exportDataAsJson;
 
   const value = {
     transactions,
@@ -133,7 +165,9 @@ export const FinanceProvider = ({ children }) => {
     isLoading, isMutating,
     totalBalance, totalIncome, totalExpenses,
     addTransaction, updateTransaction, deleteTransaction,
-    exportData
+    exportData,
+    exportDataAsJson,
+    exportDataAsCsv
   };
 
   return (
